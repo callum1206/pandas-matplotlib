@@ -5,7 +5,7 @@ from datetime import datetime
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 
-df = pd.read_csv(r"C:\Users\callu\Documents\PYTHON PROJECTS\pandas projects\stem saleries\STEM_saleries.csv") 
+df = pd.read_csv(r"STEM_saleries.csv") 
 
 #converting the timestamp column to a datetime object
 df['timestamp'] = pd.to_datetime(df['timestamp'])

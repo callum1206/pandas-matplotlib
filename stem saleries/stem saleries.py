@@ -7,7 +7,16 @@ from datetime import datetime
 from oo_date_ranges import date_functions
 
 #importing the dataframe
-df = pd.read_csv(r"STEM_saleries.csv") 
+while True:
+    df_input = input("please enter the filepath of the df: ")
+    try:
+        df = pd.read_csv(df_input)
+        print("\nfound dataframe\n\nloading lots of things...")
+
+        break
+    except:
+        print("\ncould not find dataframe, please make sure that you entered the correct filepath")
+
 #telling the date functions class what the date column is
 dates = date_functions(df["timestamp"])
 
@@ -60,10 +69,9 @@ for role in roles:
 plt.figure(figsize=(11,6)).set_tight_layout(tight=True)
 plt.style.use('ggplot')
 plt.xticks(fontsize = 8)
-plt.title(f'STEM Role Saleries from {start_date} to {end_date}')
+plt.title(f'STEM Role Saleries from {str(start_date)[:10]} to {str(end_date)[:10]}')
 plt.xlabel('Roles')
 plt.ylabel('Saleries ($)')
 plt.bar(roles, sals, align='edge', width=0.5)
 plt.show()
-
 

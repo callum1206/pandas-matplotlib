@@ -53,8 +53,27 @@ def get_end_date():
             flag = True
             print("sorry, looks like the date you entered is invalid\nplease make sure it is in the correct format\n")
 
-start_date = get_start_date()
-end_date = get_end_date()
+flag=True
+while flag == True:
+    all_dates = input("enter A to show all salaries for all dates or S to select a daterange: ").upper()
+
+    if all_dates == "S":
+        start_date = get_start_date()
+        end_date = get_end_date()
+
+        if start_date<dates.min_date() or end_date>dates.max_date():
+            print("\ndate(s) out of range, please try again")
+            start_date = get_start_date()
+            end_date = get_end_date() 
+        flag=False
+
+    elif all_dates == "A":
+        start_date = dates.min_date()
+        end_date = dates.max_date()
+        flag=False
+
+    else:
+        print("Sorry thats not an option, please try again\n")
 
 #creating the datemask
 date_mask = df.loc[(df["timestamp"] >= start_date) & (df["timestamp"] <= end_date)].copy()

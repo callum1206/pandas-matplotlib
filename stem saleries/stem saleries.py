@@ -65,13 +65,15 @@ sals = []
 for role in roles:
     sals.append(date_mask.loc[date_mask['title'] == role]['totalyearlycompensation'].mean().__round__(0))
 
+str_start_date = datetime.strftime(start_date, "%Y-%m-%d")
+str_end_date = datetime.strftime(end_date, "%Y-%m-%d")
+
 #plotting data into a bar graph using the matplotlib module
 plt.figure(figsize=(11,6)).set_tight_layout(tight=True)
 plt.style.use('ggplot')
 plt.xticks(fontsize = 8)
-plt.title(f'STEM Role Saleries from {str(start_date)[:10]} to {str(end_date)[:10]}')
+plt.title(f'STEM Role Saleries from {str_start_date} to {str(end_date)[:10]}')
 plt.xlabel('Roles')
 plt.ylabel('Saleries ($)')
 plt.bar(roles, sals, align='edge', width=0.5)
 plt.show()
-

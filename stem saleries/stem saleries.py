@@ -3,8 +3,11 @@ import matplotlib as mpl
 from matplotlib import pyplot as plt
 from datetime import datetime
 
-#this is an oop file i made with functions to grab the earliest and also the latest datetimes in a pd sereies
-from oo_date_ranges import date_functions
+#importing the matplot functions from the pd_plt_funcs.py file
+from pd_plt_funcs import av_role_saleries
+
+#using the date range file to carry out anything date/timestamp related
+from date_range import date_selection
 
 #importing the dataframe
 while True:
@@ -17,82 +20,26 @@ while True:
     except:
         print("\ncould not find dataframe, please make sure that you entered the correct filepath")
 
-#telling the date functions class what the date column is
-dates = date_functions(df["timestamp"])
+#making a menu function so that the user can select which data models to produce
+def menu():
+    options = input("""
+    which data would you like to visualise?
+    (1) Average Stem Role Saleries
+    (x) stop the program
+    please enter a corrosponding number: """)
 
-#converting the timestamp column to a datetime object
-df['timestamp'] = pd.to_datetime(df['timestamp'])
+    while True:
+        if options == "x":
+            print("""
+            thankyou for using the pandas/matplotlib project!
+            have a great day""")
+            break
 
-#grabing the daterange
-def get_start_date():
-    flag = True
-    while flag == True:
-        date_input = input(f"""
-the earliest date in the dataframe is {dates.min_date()}
-the latest date in the dataframe is {dates.max_date()}
-please enter the start date in yyyy-mm-dd format: """)
-        try:
-            strf_date = datetime.strptime(date_input, "%Y-%m-%d")
-            pd_start_date = pd.to_datetime(strf_date)
-            flag = False
-            return pd_start_date
-        except:
-            flag = True
-            print("sorry, looks like the date you entered is invalid\nplease make sure it is in the correct format\n")
+        elif options == "1":
+            date_mask, str_start_date, str_end_date = date_selection()
+            av_role_saleries(date_mask, str_start_date, str_end_date)
+        
+        else:
+            print("not an option\nplease try again!\n")
 
-def get_end_date():
-    flag = True
-    while flag == True:
-        date_input = input(f"please enter the end date in yyyy-mm-dd format: ")
-        try:
-            strf_date = datetime.strptime(date_input, "%Y-%m-%d")
-            pd_end_date = pd.to_datetime(strf_date)
-            flag = False
-            return pd_end_date
-        except:
-            flag = True
-            print("sorry, looks like the date you entered is invalid\nplease make sure it is in the correct format\n")
-
-flag=True
-while flag == True:
-    all_dates = input("enter A to show all salaries for all dates or S to select a daterange: ").upper()
-
-    if all_dates == "S":
-        start_date = get_start_date()
-        end_date = get_end_date()
-
-        if start_date<dates.min_date() or end_date>dates.max_date():
-            print("\ndate(s) out of range, please try again")
-            start_date = get_start_date()
-            end_date = get_end_date() 
-        flag=False
-
-    elif all_dates == "A":
-        start_date = dates.min_date()
-        end_date = dates.max_date()
-        flag=False
-
-    else:
-        print("Sorry thats not an option, please try again\n")
-
-#creating the datemask
-date_mask = df.loc[(df["timestamp"] >= start_date) & (df["timestamp"] <= end_date)].copy()
-
-# getting the saleries for each role into a new list called sals
-roles = ['Software Engineer', 'Product Manager', 'Software Engineering Manager', 'Data Scientist', 'Hardware Engineer', 'Product Designer', 'Technical Program Manager']
-sals = []
-for role in roles:
-    sals.append(date_mask.loc[date_mask['title'] == role]['totalyearlycompensation'].mean().__round__(0))
-
-str_start_date = datetime.strftime(start_date, "%Y-%m-%d")
-str_end_date = datetime.strftime(end_date, "%Y-%m-%d")
-
-#plotting data into a bar graph using the matplotlib module
-plt.figure(figsize=(11,6)).set_tight_layout(tight=True)
-plt.style.use('ggplot')
-plt.xticks(fontsize = 8)
-plt.title(f'STEM Role Saleries from {str_start_date} to {str(end_date)[:10]}')
-plt.xlabel('Roles')
-plt.ylabel('Saleries ($)')
-plt.bar(roles, sals, align='edge', width=0.5)
-plt.show()
+menu()
